@@ -3,9 +3,8 @@ title: "Statistical Inference Course Project"
 author: "nthehai01"
 date: "2/23/2022"
 output:
-  pdf_document :
-      latex_engine : xelatex
-mainfont : NanumGothic
+  html_document:
+    df_print: paged
 ---
 
 ```{r setup, include=FALSE}
@@ -13,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 ```
 
 
-## Synopsis
+## Overview
 
 The project consists of two parts:
 
@@ -22,6 +21,8 @@ The project consists of two parts:
 
 
 ## Part 1: Simulation Exercise
+
+#### Simulations
 
 In this project, I will investigate the exponential distribution of averages of 40 exponentials with $\lambda$ = 0.2 and compare it with the Central Limit Theorem.
 ```{r}
@@ -44,7 +45,7 @@ mean.sim <- apply(sim, 2, mean)
 ```
 
 
-#### Showing the sample mean and comparing it to the theoretical mean of the distribution
+#### Sample Mean versus Theoretical Mean
 
 **Note:** the theoretical mean and standard deviation of exponential distribution are the same with $$\frac{1}{\lambda}$$.
 
@@ -63,7 +64,7 @@ mean.theo
 As can be seen from the results, the sample mean and the theoretical mean are pretty much close.
 
 
-#### Showing how variable the sample is and comparing it to the theoretical variance of the distribution
+#### Sample Variance versus Theoretical Variance
 
 The sample variance:
 ```{r}
@@ -80,7 +81,7 @@ var.theo
 As can be seen from the results, the sample variance and the theoretical variance are pretty much close.
 
 
-#### Showing that the distribution is approximately normal
+#### Distribution
 
 In this session, I will plot the simulations and two distribution curves, one for the simulations and one for the theoretical distribution.
 
@@ -127,4 +128,8 @@ Plotting:
 ```{r}
 hist.sim
 ```
+
+As can be seen from the graph, the two distributions are identical.
+
+## Part 2
 
