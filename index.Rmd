@@ -1,0 +1,130 @@
+---
+title: "Statistical Inference Course Project"
+author: "nthehai01"
+date: "2/23/2022"
+output:
+  pdf_document :
+      latex_engine : xelatex
+mainfont : NanumGothic
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+
+## Synopsis
+
+The project consists of two parts:
+
+1. A simulation exercise
+2. Basic inferential data analysis
+
+
+## Part 1: Simulation Exercise
+
+In this project, I will investigate the exponential distribution of averages of 40 exponentials with $\lambda$ = 0.2 and compare it with the Central Limit Theorem.
+```{r}
+## initialize
+n = 40
+lambda = 0.2
+```
+
+Creating a thousand exponential distribution simulations:
+```{r}
+n.sim = 1000
+
+set.seed(42)
+sim <- replicate(n.sim, rexp(n, lambda))
+```
+
+Calculating mean of the each simulation:
+```{r}
+mean.sim <- apply(sim, 2, mean)
+```
+
+
+#### Showing the sample mean and comparing it to the theoretical mean of the distribution
+
+**Note:** the theoretical mean and standard deviation of exponential distribution are the same with $$\frac{1}{\lambda}$$.
+
+The sample mean:
+```{r}
+mean.sam <- mean(mean.sim)
+mean.sam
+```
+
+The theoretical mean:
+```{r}
+mean.theo <- 1 / lambda
+mean.theo
+```
+
+As can be seen from the results, the sample mean and the theoretical mean are pretty much close.
+
+
+#### Showing how variable the sample is and comparing it to the theoretical variance of the distribution
+
+The sample variance:
+```{r}
+var.sam <- var(mean.sim)
+var.sam
+```
+
+The theoretical variance:
+```{r}
+var.theo <- (1/lambda)^2 / n
+var.theo
+```
+
+As can be seen from the results, the sample variance and the theoretical variance are pretty much close.
+
+
+#### Showing that the distribution is approximately normal
+
+In this session, I will plot the simulations and two distribution curves, one for the simulations and one for the theoretical distribution.
+
+```{r}
+mean.df <- data.frame(mean = mean.sim)
+```
+
+Creating a histogram for the simulations:
+```{r}
+library(ggplot2)
+hist.sim <- ggplot(mean.df, aes(x = mean)) +
+  geom_histogram(aes(y =..density..),
+                 binwidth = lambda,
+                 fill="lightcoral", 
+                 color="black") +
+  ggtitle("Exponential distribution")
+```
+
+Adding a normal curve for the simulations:
+```{r}
+hist.sim <- hist.sim + stat_function(fun = dnorm, 
+                                     args = list(mean = mean.sam, 
+                                                 sd = sqrt(var.sam)),
+                                     aes(colour = "Simulations"),
+                                     size = 1.5)
+```
+
+Adding a normal curve for the theoritial distribution:
+```{r}
+hist.sim <- hist.sim + stat_function(fun = dnorm, 
+                                     args = list(mean = mean.theo, 
+                                                 sd = sqrt(var.theo)),
+                                     aes(colour = "Theory"),
+                                     alpha = 0.6,
+                                     size = 1.5)
+```
+
+Adding color to two distribution curves:
+```{r}
+hist.sim <- hist.sim + scale_colour_manual("Type", values=c("yellow", "black"))
+```
+
+Plotting:
+```{r}
+hist.sim
+```
+
