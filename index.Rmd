@@ -133,3 +133,91 @@ As can be seen from the graph, the two distributions are identical.
 
 ## Part 2
 
+In the second portion of the project, I am going to analyze the ToothGrowth data in the R datasets package.
+
+#### Loading the ToothGrowth data 
+```{r}
+data(ToothGrowth)
+```
+
+
+#### Performing some basic exploratory data analyses
+
+The response is the *length* of odontoblasts (cells responsible for tooth growth) in 60 guinea pigs. Each animal received one of three *dose* levels of vitamin C (0.5, 1, and 2 mg/day) by one of two delivery *methods*, orange juice (coded as OJ) or ascorbic acid (a form of vitamin C and coded as VC). 
+
+```{r}
+str(ToothGrowth)
+```
+
+It shows that our data set containing 60 observations and 3 variables with ```len``` and ```dose``` are numerical, ```supp``` is a 2-level factor.
+
+Check for missing values:
+```{r}
+apply(is.na(ToothGrowth), 2, sum)
+```
+
+Let's look at how many samples we have for each type of doe and method pairs:
+```{r}
+table(ToothGrowth$supp, ToothGrowth$dose)
+```
+
+We see that there are 10 samples for each pair of dose and method, 20 samples for each dose and 30 samples for each method.
+
+Let's look at a box plot of tooth length broken down by method and dose:
+```{r}
+library(ggplot2)
+ggplot(ToothGrowth, aes(x = factor(dose), y = len, fill = supp)) +
+  geom_boxplot() +
+  ggtitle("Tooth length by method and dose") +
+  xlab("Dose (mg/day)") +
+  ylab("Tooth length") +
+  guides(fill=guide_legend(title='Method'))
+```
+
+From the plot, we see:
+
+1. For 2.0 mg/day dose, there is no difference in tooth length between OJ and VC.
+2. For 0.5 mg/day and 1.0 mg/day dose, the lengths of odontoblasts with OJ method are higher than with VC method.
+3. For OJ and VC, a dose of 1.0 mg/day is always higher than a dose of 0.5 mg/day when it comes to tooth length.
+
+
+#### Providing a basic summary of the data
+
+```{r}
+summary(ToothGrowth)
+```
+
+
+#### Using confidence intervals and/or hypothesis tests to compare tooth growth by supp and dose
+
+**First hypothesis:** *$H_0$:* Both types of supplement are involving in tooth length.
+```{r}
+t.test(len ~ supp, data = ToothGrowth, alternative = "two.sided")
+```
+
+Since the p-value > $\alpha$ = 0.05, we can not reject the null hypothesis. Both supplements are delivering same tooth growth.
+
+**Second hypothesis:** *$H_0$:* For 0.5 mg/day and 1.0 mg/day dose, the lengths of odontoblasts with OJ method are less than or equal to VC method.
+```{r}
+## filter the record with 0.5 or 1.0 dose
+filtered.dose <- ToothGrowth[ToothGrowth$dose != 2.0, ]
+
+t.test(len ~ supp, data = filtered.dose, alternative = "greater")
+```
+
+Since the p-value < $\alpha$ = 0.05, we accept the null hypothesis that for 0.5 mg/day and 1.0 mg/day dose, the lengths of odontoblasts with OJ method are less than or equal to VC method.
+
+**Third hypothesis:** *$H_0$:* For OJ and VC, a dose of 0.5 mg/day is always higher than or equal to a dose of 1.0 mg/day when it comes to tooth length.
+```{r}
+t.test(len ~ dose, data = filtered.dose, alternative = "less")
+```
+
+Since the p-value < $\alpha$ = 0.05, we reject the null hypothesis. For OJ and VC supplements, a dose of 1.0 mg/day is always higher than a 0.5 mg/day dose in term of tooth length.
+
+
+#### Conclusion
+
+According to the t-tests applied in the previous section and according to the summarised data, it is clear that:
+
+- The OJ and VC supplements are delivering same tooth growth but for 0.5 mg/day and 1.0 mg/day dose, the lengths of odontoblasts with OJ method are greater than VC method. 
+- For OJ and VC supplements, a dose of 1.0 mg/day is always higher than a 0.5 mg/day dose in term of tooth length.
