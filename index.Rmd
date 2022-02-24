@@ -131,7 +131,7 @@ hist.sim
 
 As can be seen from the graph, the two distributions are identical.
 
-## Part 2
+## Part 2: Basic Inferential Data Analysis
 
 In the second portion of the project, I am going to analyze the ToothGrowth data in the R datasets package.
 
